@@ -152,13 +152,14 @@ export default function AboutPage() {
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
-                className="absolute -bottom-6 -left-6 glass-royal p-4 rounded-lg"
               >
-                <div className="flex items-center gap-3">
-                  <FaGraduationCap className="text-3xl text-primary" />
-                  <div>
-                    <p className="text-gray-800 dark:text-white font-bold">رؤيتنا</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">تعليم متميز لكل طالب</p>
+                <div className="absolute -bottom-6 -left-6 glass-royal p-4 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <FaGraduationCap className="text-3xl text-primary" />
+                    <div>
+                      <p className="text-gray-800 dark:text-white font-bold">رؤيتنا</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">تعليم متميز لكل طالب</p>
+                    </div>
                   </div>
                 </div>
               </motion.div>
