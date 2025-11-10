@@ -91,22 +91,24 @@ export default function AboutPage() {
         <div className="container-custom">
           <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="md:w-1/2">
-              <motion.h1 
+              <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="heading-1 mb-6"
               >
-                عن منصة <span className="text-primary">المستقبل</span> التعليمية
-              </motion.h1>
-              <motion.p 
+                <h1 className="heading-1 mb-6">
+                  عن منصة <span className="text-primary">المستقبل</span> التعليمية
+                </h1>
+              </motion.div>
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="body-text mb-8 text-lg"
               >
-                منصة تعليمية رائدة في مجال التعليم الإلكتروني، تهدف لتقديم محتوى تعليمي عالي الجودة للطلاب في جميع المراحل التعليمية. نحن نؤمن بحق كل طالب في الحصول على تعليم متميز بغض النظر عن موقعه الجغرافي أو ظروفه الاقتصادية.
-              </motion.p>
+                <p className="body-text mb-8 text-lg">
+                  منصة تعليمية رائدة في مجال التعليم الإلكتروني، تهدف لتقديم محتوى تعليمي عالي الجودة للطلاب في جميع المراحل التعليمية. نحن نؤمن بحق كل طالب في الحصول على تعليم متميز بغض النظر عن موقعه الجغرافي أو ظروفه الاقتصادية.
+                </p>
+              </motion.div>
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -120,8 +122,8 @@ export default function AboutPage() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
-              className="md:w-1/2 relative"
             >
+              <div className="md:w-1/2 relative">
               <div className="relative w-full h-80 md:h-96 rounded-2xl overflow-hidden shadow-xl flex items-center justify-center bg-gradient-to-r from-white via-gray-50 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
                 <div className="relative w-64 h-64 md:w-80 md:h-80">
                   <Image
@@ -160,6 +162,7 @@ export default function AboutPage() {
                   </div>
                 </div>
               </motion.div>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -183,13 +186,14 @@ export default function AboutPage() {
                 whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
-                className="card-modern text-center"
               >
+                <div className="card-modern text-center">
                 <div className="mx-auto mb-4 w-16 h-16 flex items-center justify-center bg-primary/10 dark:bg-primary/20 rounded-full">
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-gray-100">{feature.title}</h3>
                 <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
+                </div>
               </motion.div>
             ))}
           </div>
