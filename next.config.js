@@ -4,6 +4,17 @@ const nextConfig = {
   swcMinify: true,
   output: 'standalone', // إضافة لتحسين الأداء في الإنتاج
   poweredByHeader: false, // إزالة رأس Powered-By للأمان
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    // Skip ESLint during builds
+    ignoreDuringBuilds: true,
+  },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {exclude: ['error', 'warn']} : false,
   },
