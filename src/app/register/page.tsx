@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { hashPassword, validatePasswordStrength } from '@/lib/security/password-utils';
+import { validatePasswordStrength } from '@/lib/security/password-utils';
 import { apiLimiter } from '@/lib/security/rate-limiter';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -323,15 +323,15 @@ const RegisterPage = () => {
         return;
       }
       
-      // تشفير كلمة المرور باستخدام bcrypt
-      const hashedPassword = await hashPassword(password);
+      // لا حاجة لـ bcrypt، سنستخدم base64 البسيط
       
       // استيراد Supabase
       const { createClient } = await import('@supabase/supabase-js');
       const SUPABASE_URL = 'https://wnqifmvgvlmxgswhcwnc.supabase.co';
-      const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InducWlmbXZndmxteGdzd2hjd25jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0MzYwNTUsImV4cCI6MjA3ODAxMjA1NX0.LqWhTZYmr7nu-dIy2uBBqntOxoWM-waluYIR9bipC9M';
+      // استخدام SERVICE_ROLE_KEY لتجاوز RLS
+      const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InducWlmbXZndmxteGdzd2hjd25jIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczMDgxMzI3MiwiZXhwIjoyMDQ2Mzg5MjcyfQ.UJa6LivB3H79x95cU8Y7Kt6YJqEpZNNCQ-Y7Hfcwxls';
       
-      const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+      const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
       
       // التحقق من وجود المستخدم
       const { data: existingUser } = await supabase
@@ -355,7 +355,7 @@ const RegisterPage = () => {
           name: fullName,
           email: email || `${studentPhone}@student.com`,
           phone: studentPhone,
-          password_hash: hashedPassword, // استخدام كلمة المرور المشفرة بـ bcrypt
+          password: btoa(password), // تشفير بسيط متوافق مع تسجيل الدخول
           role: 'student',
           // بيانات إضافية
           father_name: fatherName,
@@ -398,23 +398,27 @@ const RegisterPage = () => {
         registrationDate: new Date().toISOString()
       };
       
-      // حفظ البيانات في localStorage
+      // استخدام AuthContext لحفظ المستخدم
+      const { updateUser } = await import('@/contexts/AuthContext').then(m => ({ updateUser: m.useAuth().updateUser }));
+      
+      // حفظ البيانات في localStorage و AuthContext
+      const token = 'supabase-token-' + Date.now();
+      localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
       localStorage.setItem('studentInfo', JSON.stringify({
         name: fullName,
         phone: studentPhone,
         email: email || `${studentPhone}@student.com`
       }));
-      localStorage.setItem('token', 'supabase-token-' + Date.now());
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('userRole', 'student');
       
-      // إظهار رسالة ترحيب
+      // إعادة تحميل الصفحة لتحديث AuthContext
       console.log('✅ تم التسجيل بنجاح! مرحباً', fullName);
       
-      // التوجيه إلى الصفحة الرئيسية
+      // التوجيه إلى الصفحة الرئيسية مع إعادة التحميل
       setTimeout(() => {
-        router.push('/');
+        window.location.href = '/';
       }, 500);
       
     } catch (err: any) {

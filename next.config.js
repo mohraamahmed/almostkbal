@@ -28,11 +28,15 @@ const nextConfig = {
     ],
   },
   experimental: {
-    optimizeCss: false, // تعطيل مؤقتاً لحل مشاكل التحميل
+    optimizeCss: false, // تعطيل لحل مشاكل CSS preload
     scrollRestoration: true,
     optimizePackageImports: ['react-icons'],
     serverActions: true,
+    // تحسين تحميل الصفحات
+    gzipSize: true,
   },
+  // تعطيل preload للـ CSS لحل warning
+  productionBrowserSourceMaps: false,
   webpack: (config, { isServer }) => {
     // حل مشاكل الـ chunks
     if (!isServer) {

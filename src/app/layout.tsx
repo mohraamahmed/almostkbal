@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import { Cairo } from 'next/font/google'
 import './globals.css'
-import './glowing-effects.css'
-import './performance.css'
 import dynamic from 'next/dynamic'
 import { Providers } from '../components/Providers'
 

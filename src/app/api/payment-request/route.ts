@@ -54,7 +54,6 @@ export async function POST(request: NextRequest) {
         teacher_phone: teacherPhone,
         payment_phone: paymentPhone || studentPhone,
         transaction_id: transactionId,
-        amount_paid: coursePrice,
         status: 'pending'
       })
       .select()

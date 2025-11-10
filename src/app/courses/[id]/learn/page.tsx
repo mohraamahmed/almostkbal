@@ -217,6 +217,8 @@ export default function CourseLearnPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [quizScore, setQuizScore] = useState(0);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isMarkingComplete, setIsMarkingComplete] = useState(false);
   
   // استخدام hook الخاص بتقدم الدورة
   const {
@@ -251,18 +253,20 @@ export default function CourseLearnPage() {
         
         // فحص إذا كان الطالب مشترك ومعتمد من الأدمن
         const enrolledCoursesStr = localStorage.getItem(`student_${studentPhone}_courses`);
-        let isEnrolled = false;
+        let enrolled = false;
         
         if (enrolledCoursesStr) {
           try {
             const enrolledCourses = JSON.parse(enrolledCoursesStr);
-            isEnrolled = enrolledCourses.includes(courseId);
+            enrolled = enrolledCourses.includes(courseId);
           } catch (e) {
             console.error('Error checking enrollment:', e);
           }
         }
         
-        if (!isEnrolled) {
+        setIsEnrolled(enrolled);
+        
+        if (!enrolled) {
           setError('ليس لديك صلاحية للوصول لهذا الكورس. يرجى التسجيل أو انتظار موافقة المدرس/الأدمن.');
           setIsLoading(false);
           setTimeout(() => {
@@ -358,9 +362,37 @@ export default function CourseLearnPage() {
   
   // تحديث حالة الدرس كمكتمل
   const markAsComplete = async () => {
-    if (!courseId || !currentLessonId) return;
+    if (!courseId || !currentLessonId || isMarkingComplete) return;
     
-    await updateLessonStatus(currentLessonId, { completed: true });
+    try {
+      setIsMarkingComplete(true);
+      await updateLessonStatus(currentLessonId, { completed: true });
+      
+      // حفظ التقدم في localStorage
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const progressKey = `course_${courseId}_progress_${user.phone}`;
+      const existingProgress = JSON.parse(localStorage.getItem(progressKey) || '{"completedLessons": []}');
+      
+      if (!existingProgress.completedLessons.includes(currentLessonId)) {
+        existingProgress.completedLessons.push(currentLessonId);
+        localStorage.setItem(progressKey, JSON.stringify(existingProgress));
+      }
+      
+      // عرض رسالة نجاح
+      const successMsg = document.createElement('div');
+      successMsg.className = 'fixed top-20 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce';
+      successMsg.innerHTML = '✅ تم إكمال الدرس بنجاح!';
+      document.body.appendChild(successMsg);
+      
+      setTimeout(() => {
+        successMsg.remove();
+      }, 3000);
+      
+    } catch (error) {
+      console.error('Error marking lesson as complete:', error);
+    } finally {
+      setIsMarkingComplete(false);
+    }
   };
   
   // تتبع تقدم الفيديو
@@ -648,13 +680,23 @@ export default function CourseLearnPage() {
                       </div>
                     </div>
                     
-                    {!isLessonCompleted && (
+                    {!isLessonCompleted && isEnrolled && (
                         <button
                           onClick={markAsComplete}
-                        className="mt-4 md:mt-0 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center justify-center transition"
+                          disabled={isMarkingComplete}
+                        className={`mt-4 md:mt-0 ${isMarkingComplete ? 'bg-gray-400' : 'bg-green-500 hover:bg-green-600'} text-white px-6 py-3 rounded-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 font-bold shadow-lg`}
                         >
-                        <FaRegCheckCircle className="ml-2" />
-                        تمييز كمكتمل
+                        {isMarkingComplete ? (
+                          <>
+                            <span className="animate-spin mr-2">⏳</span>
+                            جاري الحفظ...
+                          </>
+                        ) : (
+                          <>
+                            <FaRegCheckCircle className="ml-2 text-xl" />
+                            إكمال الدرس
+                          </>
+                        )}
                         </button>
                       )}
                   </div>
