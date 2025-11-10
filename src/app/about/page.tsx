@@ -228,20 +228,21 @@ export default function AboutPage() {
                 whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
-                className="card-modern text-center relative overflow-hidden"
               >
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r rounded-t-lg opacity-70 -mt-px"
-                     style={{
-                       backgroundImage: `linear-gradient(to right, ${stat.color.split(' ')[0].replace('from-', '')}, ${stat.color.split(' ')[1].replace('to-', '')})`
-                     }}
-                ></div>
-                <div className="mb-4 text-center">
-                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r ${stat.color} text-white text-2xl`}>
-                    {stat.icon}
+                <div className="card-modern text-center relative overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r rounded-t-lg opacity-70 -mt-px"
+                       style={{
+                         backgroundImage: `linear-gradient(to right, ${stat.color.split(' ')[0].replace('from-', '')}, ${stat.color.split(' ')[1].replace('to-', '')})`
+                       }}
+                  ></div>
+                  <div className="mb-4 text-center">
+                    <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r ${stat.color} text-white text-2xl`}>
+                      {stat.icon}
+                    </div>
                   </div>
+                  <div className="text-3xl md:text-4xl font-bold mb-2 text-gray-800 dark:text-white">{stat.value}</div>
+                  <div className="text-gray-600 dark:text-gray-400 font-medium">{stat.title}</div>
                 </div>
-                <div className="text-3xl md:text-4xl font-bold mb-2 text-gray-800 dark:text-white">{stat.value}</div>
-                <div className="text-gray-600 dark:text-gray-400 font-medium">{stat.title}</div>
               </motion.div>
             ))}
           </div>
